@@ -18,25 +18,28 @@ const flush_stats = function rts_flush(timestamp, metrics) {
     stats.push(sample);
   }
 
-  // // Gauge stats
+  for (let counter in counterRates) {
+    let sample = {key: `${counter}_rate`, value: counterRates[counter], timestamp: timeInMilliSeconds};
+    labels.push("counter_rate");
+    stats.push(sample);
+  }
+
+  // Gauge stats
   for (let gauge in gauges) {
     let sample = {key: gauge, value: gauges[gauge], timestamp: timeInMilliSeconds};
     labels.push("gauge");
     stats.push(sample);
   }
 
-  // // Timer stats
-  // for (let timer in timer_data) {
-  //   for (let timer_stat in timer_data[timer]) {
-  //     let sample = new Sample(
-  //       `${timer}.${timer_stat}`,
-  //       timer_data[timer][timer_stat],
-  //       timeInMilliSeconds
-  //     );
-  //     labels.push("timer");
-  //     stats.push(sample);
-  //   }
-  // }
+  // Timer stats
+  for (let timer in timer_data) {
+    for (let timer_stat in timer_data[timer]) {
+      let sample = {key: `${timer}.${timer_stat}`, value: timer_data[timer][timer_stat], timestamp: timeInMilliSeconds};
+      labels.push("timer");
+      stats.push(sample);
+    }
+  }
+
   // // Sets stats
   // for (let set in sets) {
   //   let count = Object.keys(sets[set].store).length;
